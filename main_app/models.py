@@ -3,6 +3,13 @@ from django.urls import reverse
 
 # Create your models here.
 
+MEALS = (
+  ('B', 'Breakfast'),
+  ('L', 'Lunch'),
+  ('D', 'Dinner')
+)
+
+
 class Dog(models.Model):
   name = models.CharField(max_length=100)
   breed = models.CharField(max_length=100)
@@ -14,5 +21,21 @@ class Dog(models.Model):
 
   def get_absolute_url(self):
     return reverse('dogs_detail', kwargs={'dog_id': self.id})
+
+
+class Feeding(models.Model):
+  date = models.DateField('Feeding date')
+  meal = models.CharField(max_length=1, choices=MEALS, default=MEALS[0][0])
+
+  def __str__(self):
+    return f"{self.get_meal_display()} on {self.date}"
+
+  dog = models.ForeignKey(Dog, on_delete=models.CASCADE)
+
+  def __str__(self):
+    return f"{self.get_meal_display()} on {self.date}"
+
+  class Meta:
+    ordering = ['-date']
 
 
